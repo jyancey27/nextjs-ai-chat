@@ -1,5 +1,4 @@
 # Next.js AI Chat
----
 
 ### About
 
