@@ -4,7 +4,7 @@
 
 This is a basic example of how to use Next.js in combination with OpenAI and LangChain. It also contains an example with the Vercel AI SDK.
 There are basic RAG patterns to ask questions about my resume and other examples.
-Source: [Dave Gray] (https://www.youtube.com/watch?v=YLagvzoWCL0)
+Source: [Dave Gray](https://www.youtube.com/watch?v=YLagvzoWCL0)
 
 ---
 
