@@ -1,4 +1,5 @@
 // RAG resume loader example
+// https://js.langchain.com/docs/integrations/document_loaders/file_loaders/directory
 import {
   Message as VercelChatMessage,
   StreamingTextResponse,
@@ -49,7 +50,7 @@ export async function POST(req: Request) {
     const model = new ChatOpenAI({
       apiKey: process.env.OPENAI_API_KEY!,
       model: "gpt-3.5-turbo",
-      temperature: 0,
+      temperature: 0.3,
       streaming: true,
       verbose: true,
     });
