@@ -15,9 +15,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useClerk, useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export function ModeToggle() {
   const { setTheme, theme, systemTheme } = useTheme();
+  const { user } = useUser();
+  const { signOut } = useClerk();
+  const router = useRouter();
 
   return (
     <DropdownMenu>
@@ -32,9 +37,9 @@ export function ModeToggle() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Jaydon Yancey</p>
+            <p className="text-sm font-medium leading-none">{user?.fullName}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              jaydonyancey7@gmail.com
+              {user?.primaryEmailAddress?.emailAddress}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -73,7 +78,9 @@ export function ModeToggle() {
           <span className="sr-only">Toggle system theme</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Log out</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => signOut(() => router.push("/"))}>
+          Log out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
