@@ -44,6 +44,15 @@ export function Chat() {
     setRouteName(e);
   };
 
+  // Function to set the height of the textarea
+  const handleInputChangeSize = () => {
+    const textarea = inputRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  };
+
   useEffect(() => {
     const domNode = chatParent.current;
     if (domNode) {
@@ -54,6 +63,7 @@ export function Chat() {
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
+      inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
     }
   }, []);
 
@@ -141,9 +151,18 @@ export function Chat() {
             ref={inputRef}
             placeholder="Type your question here..."
             value={input}
-            onChange={handleInputChange}
+            onChange={(e) => {
+              handleInputChange(e);
+              handleInputChangeSize();
+            }}
             tabIndex={0}
-            className="min-h-[60px] w-full resize-none bg-transparent pl-4 pr-32 py-[1.3rem] focus-within:outline-none sm:text-sm"
+            className={`w-full max-h-64 resize-none bg-transparent pl-4 pr-32 py-[1.3rem] focus-within:outline-none sm:text-sm ${
+              !inputRef.current
+                ? "overflow-hidden"
+                : inputRef.current.scrollHeight <= 64 * 4
+                ? "overflow-hidden"
+                : "overflow-auto"
+            }`}
             autoFocus
             spellCheck={false}
             autoComplete="off"

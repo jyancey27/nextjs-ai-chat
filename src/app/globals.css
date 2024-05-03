@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px; /* width of the entire scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* color of the track. It is transparent here */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5); /* color of the scroll thumb */
+  border-radius: 4px; /* roundness of the scroll thumb */
+  border: 2px solid transparent; /* creates padding around scroll thumb */
+}
+
+textarea {
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable both-edges;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -48,7 +69,6 @@
     --ring: 24 5.7% 82.9%;
   }
 }
-
 
 @layer base {
   * {
