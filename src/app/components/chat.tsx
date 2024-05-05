@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useChat } from "ai/react";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Tooltip,
@@ -10,7 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ArrowUp, Trash } from "lucide-react";
+import { ArrowUp, Trash, Clipboard, Check } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { useSearchParams } from "next/navigation";
@@ -28,6 +28,8 @@ export function Chat() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { user } = useUser();
   const { isLoaded, isSignedIn } = useAuth();
+
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
 
   useEffect(() => {
     const domNode = chatParent.current;
@@ -49,6 +51,19 @@ export function Chat() {
   // Function to clear chat messages
   const handleClearChat = () => {
     setMessages([]);
+  };
+
+  // Function to copy text to clipboard
+  const copyToClipboard = (text: string, messageId: string) => {
+    navigator.clipboard.writeText(text).then(
+      () => {
+        setCopiedMessageId(messageId); // Show tooltip
+        setTimeout(() => setCopiedMessageId(null), 2000);
+      },
+      (err) => {
+        console.error("Failed to copy text: ", err);
+      }
+    );
   };
 
   // Function to set the height of the textarea
@@ -78,8 +93,38 @@ export function Chat() {
                       {user?.lastName?.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="rounded-xl p-4 bg-muted shadow-md flex">
-                    <p className="text-primary">{m.content}</p>
+                  <div className="rounded-xl p-4 bg-muted shadow-md flex min-w-36 relative">
+                    <p className="text-primary pr-8">{m.content}</p>
+                    <div className="absolute right-1 top-2">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              className="rounded-xl h-10 w-10 px-2 hover:bg-black"
+                              variant="ghost"
+                            >
+                              {copiedMessageId && copiedMessageId === m.id ? (
+                                <Check className="cursor-default" />
+                              ) : (
+                                <Clipboard
+                                  size={18}
+                                  className="cursor-pointer"
+                                  onClick={() =>
+                                    copyToClipboard(m.content, m.id)
+                                  }
+                                />
+                              )}
+                              <span className="sr-only">
+                                Copy message content
+                              </span>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" align="center">
+                            <p>Copy</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                   </div>
                 </li>
               ) : (
@@ -88,8 +133,38 @@ export function Chat() {
                     <AvatarImage src="/IconImages/chatbot.png" alt="@AIGPT" />
                     <AvatarFallback>AI</AvatarFallback>
                   </Avatar>
-                  <div className="rounded-xl p-4 bg-background shadow-md flex w-3/4">
-                    <p className="text-primary">{m.content}</p>
+                  <div className="rounded-xl p-4 bg-background shadow-md flex w-3/4 min-w-36 relative">
+                    <p className="text-primary pr-8">{m.content}</p>
+                    <div className="absolute right-1 top-2">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              className="rounded-xl h-10 w-10 px-2"
+                              variant="ghost"
+                            >
+                              {copiedMessageId && copiedMessageId === m.id ? (
+                                <Check className="cursor-default" />
+                              ) : (
+                                <Clipboard
+                                  size={18}
+                                  className="cursor-pointer"
+                                  onClick={() =>
+                                    copyToClipboard(m.content, m.id)
+                                  }
+                                />
+                              )}
+                              <span className="sr-only">
+                                Copy message content
+                              </span>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" align="center">
+                            <p>Copy</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                   </div>
                 </li>
               )}
