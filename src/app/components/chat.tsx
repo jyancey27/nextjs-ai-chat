@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/tooltip";
 import { ArrowUp, Trash } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import { useUser } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 import { useSearchParams } from "next/navigation";
 
 export function Chat() {
@@ -26,7 +26,8 @@ export function Chat() {
     });
   const chatParent = useRef<HTMLUListElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { user } = useUser();
+  const { isLoaded, isSignedIn } = useAuth();
 
   useEffect(() => {
     const domNode = chatParent.current;
@@ -44,8 +45,6 @@ export function Chat() {
       <p className="text-center mt-4">Sign in to interact with the chat bot.</p>
     );
   }
-
-  console.log(user);
 
   // Function to clear chat messages
   const handleClearChat = () => {
@@ -73,10 +72,10 @@ export function Chat() {
               {m.role === "user" ? (
                 <li key={m.id} className="flex flex-row-reverse">
                   <Avatar className="ml-1.5 mt-3 h-8 w-8">
-                    <AvatarImage alt={`@${user.username}`} />
+                    <AvatarImage alt={`@${user?.username}`} />
                     <AvatarFallback>
-                      {user.firstName?.charAt(0)}
-                      {user.lastName?.charAt(0)}
+                      {user?.firstName?.charAt(0)}
+                      {user?.lastName?.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="rounded-xl p-4 bg-muted shadow-md flex">

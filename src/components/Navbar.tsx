@@ -15,13 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-  useAuth,
-} from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 
 import React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -36,12 +30,11 @@ export default function Navbar() {
     router.push(`/?model=${e}`);
   };
 
-
-  // TODO Fix rendering of Clerk auth and implement remaining features
-
   return (
     <header className="p-3 border-b w-full max-w-3xl mx-auto flex items-center">
-      <h1 className="text-2xl font-bold flex-1">LangChain Chat</h1>
+      <h1 className="text-2xl font-bold flex-1 cursor-pointer">
+        <a href="/">LangChain Chat</a>
+      </h1>
       {isLoaded && isSignedIn && (
         <>
           <TooltipProvider>
@@ -81,14 +74,6 @@ export default function Navbar() {
       )}
       <div>
         <ModeToggle />
-      </div>
-      <div>
-        <SignedOut>
-          <SignInButton />
-        </SignedOut>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
       </div>
     </header>
   );
