@@ -10,10 +10,16 @@ import { PromptTemplate } from "@langchain/core/prompts";
 import { HttpResponseOutputParser } from "langchain/output_parsers";
 
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+import { DocxLoader } from "langchain/document_loaders/fs/docx";
+import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
+
 import { RunnableSequence } from "@langchain/core/runnables";
 import { formatDocumentsAsString } from "langchain/util/document";
 
-const loader = new PDFLoader("src/data/Resume 2024.pdf");
+const loader = new DirectoryLoader("src/data/documents", {
+  ".pdf": (path) => new PDFLoader(path),
+  ".docx": (path) => new DocxLoader(path),
+});
 
 export const dynamic = "force-dynamic";
 
