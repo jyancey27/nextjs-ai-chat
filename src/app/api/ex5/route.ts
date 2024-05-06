@@ -31,7 +31,7 @@ const formatMessage = (message: VercelChatMessage) => {
   return `${message.role}: ${message.content}`;
 };
 
-const TEMPLATE = `Answer the user's questions based only on the following context. If the answer is not in the context, reply politely that you do not have that information available.:
+const TEMPLATE = `Answer the user's questions based on the following context. If the information isn't available, reply respectfully that you cannot provide an answer:
   ==============================
   Context: {context}
   ==============================
@@ -40,23 +40,34 @@ const TEMPLATE = `Answer the user's questions based only on the following contex
   user: {question}
   assistant:`;
 
+const TEMPLATE_RESUME = `Based on the resume and any additional research, answer the user's questions. If the resume does not contain the information required to answer or if no relevant data was found from additional sources, reply respectfully that the information is not available. Here's what we know:
+  ==============================
+  Resume Details:
+  {context}
+  ==============================
+  Previous Conversation History:
+  {chat_history}
+  
+  User's Question:
+  {question}
+
+  Assistant's Response:`;
+
 export async function POST(req: Request) {
   try {
     // Extract the `messages` from the body of the request
     const { messages } = await req.json();
-
     const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage);
-
     const currentMessageContent = messages[messages.length - 1].content;
 
     const docs = await loader.load();
 
-    const prompt = PromptTemplate.fromTemplate(TEMPLATE);
+    const prompt = PromptTemplate.fromTemplate(TEMPLATE_RESUME);
 
     const model = new ChatOpenAI({
       apiKey: process.env.OPENAI_API_KEY!,
       model: "gpt-3.5-turbo",
-      temperature: 0.3,
+      temperature: 0.4,
       streaming: true,
       verbose: true,
     });
@@ -89,6 +100,9 @@ export async function POST(req: Request) {
       stream.pipeThrough(createStreamDataTransformer())
     );
   } catch (e: any) {
-    return Response.json({ error: e.message }, { status: e.status ?? 500 });
+    return Response.json(
+      { error: `Failed to process request: ${e.message}` },
+      { status: e.status || 500 }
+    );
   }
 }
