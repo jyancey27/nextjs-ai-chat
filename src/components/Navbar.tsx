@@ -67,6 +67,7 @@ export default function Navbar() {
                 <SelectItem value="ex3">Pirate Jokes</SelectItem>
                 <SelectItem value="ex4">RAG States</SelectItem>
                 <SelectItem value="ex5">RAG Resume</SelectItem>
+                <SelectItem value="ex6">RAG Resume Agent</SelectItem>
               </SelectContent>
             </Select>
           </div>
